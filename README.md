@@ -51,6 +51,8 @@ This uses the Vite dev server from the cloned reveal.js checkout and serves this
 
 ## Publish
 
+Published site: <https://joneuhauser.github.io/revealjs-template/>
+
 GitHub Pages is configured via `.github/workflows/pages.yml`. On pushes to `main`, the workflow runs `npm ci`, stages the reveal.js runtime, and publishes a static `public/` directory containing:
 
 - `index.html`
