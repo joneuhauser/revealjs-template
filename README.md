@@ -1,6 +1,15 @@
-# KIT Reveal.js Port
+# KIT Reveal.js Presentation
 
-This is a reveal.js port of the KIT Beamer slide template in `slides.tex`.
+This is a reveal.js presentation using a KIT-inspired template. The repository keeps the reveal.js vendor runtime, reusable template assets, and deck-specific code separate. The port from the original LaTeX/PowerPoint materials was implemented with Codex.
+
+## Features
+
+- KIT-style slide grid with optional visual overlay for layout checks.
+- Reveal.js scroll mode support for linear reading.
+- Speaker mode via the official reveal.js notes plugin when the npm setup is used.
+- Go-to-slide navigation using reveal.js' built-in slide number controls.
+- Overview mode for quickly jumping between slides.
+- Whiteboard and slide annotation mode using the reveal.js chalkboard plugin.
 
 ## Structure
 
@@ -39,6 +48,15 @@ npm start
 ```
 
 This uses the Vite dev server from the cloned reveal.js checkout and serves this deck as the root. Then open the local URL printed by Vite.
+
+## Publish
+
+GitLab Pages is configured via `.gitlab-ci.yml`. On the default branch, CI runs `npm ci`, stages the reveal.js runtime, and publishes a static `public/` directory containing:
+
+- `index.html`
+- `src/`
+- `template/`
+- `vendor/reveal-runtime/`
 
 ## Notes
 
