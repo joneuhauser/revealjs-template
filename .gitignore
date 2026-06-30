@@ -1,0 +1,30 @@
+node_modules/
+vendor/reveal-runtime/
+vendor/reveal-src/
+vendor/reveal-plugins-src/
+vendor/.setup-tmp/
+vendor/.setup-runtime/
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.synctex.gz
+*.toc
+*.vrb
+texput.log
+
+# Local source/reference artifacts from the original template conversion
+beamerthemeKIT.sty
+slides.tex
+slides.pdf
+KIT_Musterfolienbibliothek_*.pdf
+KIT_PPT Template_*.potx
+
+# Local visual comparison/debug screenshots
+check-*.png
+compare-*.png
+latex-ref*.png
+latex-slide*.png

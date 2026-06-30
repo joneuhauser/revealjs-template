@@ -1,0 +1,10 @@
+{
+  "name": "kit-reveal-template",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "postinstall": "node tools/setup-reveal.mjs npm",
+    "setup:npm": "node tools/setup-reveal.mjs npm",
+    "start": "npm run --prefix vendor/reveal-src start -- ../.. --host 127.0.0.1 --config ../../vite.config.mjs"
+  }
+}
