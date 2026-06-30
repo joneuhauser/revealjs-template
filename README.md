@@ -11,7 +11,7 @@ Live demo: <https://joneuhauser.github.io/revealjs-template/>
 - Speaker mode: press `S` to open the speaker view. This requires serving the deck over HTTP, for example with `npm start` or GitHub Pages; opening `index.html` directly as a `file://` URL is not sufficient.
 - Go to slide: press `G` and enter a slide number, slide hash, or matching slide text.
 - Overview mode: press `Esc` or `O` to zoom out to the slide overview; press `Enter` to jump into the selected slide.
-- Whiteboard and annotation: use the footer buttons, `C` for slide annotations, `B` for the whiteboard, and `Del` to clear the current drawing layer.
+- Whiteboard and annotation: use the footer buttons, `C` for slide annotations, `B` for the whiteboard, and `Del` to clear the current drawing layer. The deck adds same-origin synchronization for chalkboard drawings between the main window and speaker/presenter windows, working around the upstream chalkboard speaker-view limitation tracked in [rajgoel/reveal.js-plugins#9](https://github.com/rajgoel/reveal.js-plugins/issues/9).
 
 ## Structure
 

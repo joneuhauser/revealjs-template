@@ -229,6 +229,52 @@ function revealPlugins() {
   ].filter(Boolean);
 }
 
+function setupChalkboardSync() {
+  const source =
+    globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
+  const channelName = "kit-chalkboard-sync";
+  const storageKey = `${channelName}-message`;
+
+  const replay = (content) => {
+    if (content?.sender !== "chalkboard-plugin") return;
+    const event = new CustomEvent("received");
+    event.content = content;
+    document.dispatchEvent(event);
+  };
+
+  const publish = (content, send) => {
+    if (content?.sender !== "chalkboard-plugin") return;
+    send({ source, content });
+  };
+
+  if ("BroadcastChannel" in window) {
+    const channel = new BroadcastChannel(channelName);
+    document.addEventListener("broadcast", (event) => {
+      publish(event.content, (message) => channel.postMessage(message));
+    });
+    channel.addEventListener("message", (event) => {
+      if (event.data?.source === source) return;
+      replay(event.data?.content);
+    });
+    return;
+  }
+
+  document.addEventListener("broadcast", (event) => {
+    publish(event.content, (message) => {
+      localStorage.setItem(storageKey, JSON.stringify(message));
+    });
+  });
+  window.addEventListener("storage", (event) => {
+    if (event.key !== storageKey || !event.newValue) return;
+    try {
+      const message = JSON.parse(event.newValue);
+      if (message.source !== source) replay(message.content);
+    } catch {
+      // Ignore stale or malformed sync messages.
+    }
+  });
+}
+
 function setupChalkboardControls() {
   const controls = document.createElement("div");
   controls.className = "chalkboard-controls";
@@ -328,6 +374,7 @@ function enablePresenterFallback(deck) {
 
 async function initializeDeck() {
   await loadRevealPlugins();
+  setupChalkboardSync();
 
   const deck = Reveal.initialize({
     hash: true,
