@@ -17,7 +17,7 @@ Live demo: <https://joneuhauser.github.io/revealjs-template/>
 
 - `template/` contains reusable KIT presentation assets: theme CSS, SVG/icon helpers, and converted Beamer artwork.
 - `src/` contains this deck's actual content and bootstrap code.
-- `index.html` is intentionally thin. It wires the three layers together.
+- `index.html` contains the slide markup in a `<template>` block and loads the reveal.js runtime, KIT template assets, and deck bootstrap code.
 - `vendor/` is generated locally or in CI and is ignored by git. It contains the staged browser runtime (`vendor/reveal-runtime/`) and, in npm setup mode, cloned reveal.js/plugin sources.
 
 ## Setup modes
