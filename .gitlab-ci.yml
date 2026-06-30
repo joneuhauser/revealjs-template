@@ -1,7 +1,15 @@
 image: node:22
 
 stages:
+  - test
   - deploy
+
+ci-smoke:
+  stage: test
+  script:
+    - node --version
+    - test -f index.html
+    - test -f src/app.js
 
 pages:
   stage: deploy
