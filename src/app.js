@@ -242,7 +242,20 @@ function setupChalkboardSync() {
     if (content?.sender !== "chalkboard-plugin") return;
     const event = new CustomEvent("received");
     event.content = content;
-    document.dispatchEvent(event);
+
+    const originalLog = console.log;
+    console.log = (...args) => {
+      const isChalkboardDebug =
+        args.length === 1 &&
+        typeof args[0] === "string" &&
+        args[0].includes('"sender":"chalkboard-plugin"');
+      if (!isChalkboardDebug) originalLog.apply(console, args);
+    };
+    try {
+      document.dispatchEvent(event);
+    } finally {
+      console.log = originalLog;
+    }
   };
 
   const readStorageMessage = () => {
