@@ -256,14 +256,10 @@ function setupChalkboardSync() {
 
   const source =
     globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
-  const channelName = "kit-chalkboard-sync";
-  const storageKey = `${channelName}-message`;
-  const channel =
-    "BroadcastChannel" in window ? new BroadcastChannel(channelName) : null;
+  const storageKey = "kit-chalkboard-sync-message";
   let lastStorageMessage = "";
 
   const replay = (content) => {
-    if (content?.sender !== "chalkboard-plugin") return;
     const event = new CustomEvent("received");
     event.content = content;
     document.dispatchEvent(event);
@@ -275,34 +271,24 @@ function setupChalkboardSync() {
     lastStorageMessage = value;
     try {
       const message = JSON.parse(value);
-      if (message.source !== source) replay(message.content);
+      if (
+        message.source !== source &&
+        message.content?.sender === "chalkboard-plugin"
+      ) {
+        replay(message.content);
+      }
     } catch {
       // Ignore stale or malformed sync messages.
     }
   };
 
-  const publish = (content) => {
-    if (content?.sender !== "chalkboard-plugin") return;
-    const message = { source, time: Date.now(), content };
-    const serialized = JSON.stringify(message);
-    lastStorageMessage = serialized;
-    localStorage.setItem(storageKey, serialized);
-    return message;
-  };
-
   document.addEventListener("broadcast", (event) => {
-    const message = publish(event.content);
-    if (message && channel) {
-      channel.postMessage(message);
-    }
-  });
+    const { content } = event;
+    if (content?.sender !== "chalkboard-plugin") return;
 
-  if (channel) {
-    channel.addEventListener("message", (event) => {
-      if (event.data?.source === source) return;
-      replay(event.data?.content);
-    });
-  }
+    lastStorageMessage = JSON.stringify({ source, time: Date.now(), content });
+    localStorage.setItem(storageKey, lastStorageMessage);
+  });
 
   window.addEventListener("storage", (event) => {
     if (event.key === storageKey) readStorageMessage();
