@@ -234,6 +234,9 @@ function setupChalkboardSync() {
     globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
   const channelName = "kit-chalkboard-sync";
   const storageKey = `${channelName}-message`;
+  const channel =
+    "BroadcastChannel" in window ? new BroadcastChannel(channelName) : null;
+  let lastStorageMessage = "";
 
   const replay = (content) => {
     if (content?.sender !== "chalkboard-plugin") return;
@@ -242,37 +245,45 @@ function setupChalkboardSync() {
     document.dispatchEvent(event);
   };
 
-  const publish = (content, send) => {
-    if (content?.sender !== "chalkboard-plugin") return;
-    send({ source, content });
-  };
-
-  if ("BroadcastChannel" in window) {
-    const channel = new BroadcastChannel(channelName);
-    document.addEventListener("broadcast", (event) => {
-      publish(event.content, (message) => channel.postMessage(message));
-    });
-    channel.addEventListener("message", (event) => {
-      if (event.data?.source === source) return;
-      replay(event.data?.content);
-    });
-    return;
-  }
-
-  document.addEventListener("broadcast", (event) => {
-    publish(event.content, (message) => {
-      localStorage.setItem(storageKey, JSON.stringify(message));
-    });
-  });
-  window.addEventListener("storage", (event) => {
-    if (event.key !== storageKey || !event.newValue) return;
+  const readStorageMessage = () => {
+    const value = localStorage.getItem(storageKey);
+    if (!value || value === lastStorageMessage) return;
+    lastStorageMessage = value;
     try {
-      const message = JSON.parse(event.newValue);
+      const message = JSON.parse(value);
       if (message.source !== source) replay(message.content);
     } catch {
       // Ignore stale or malformed sync messages.
     }
+  };
+
+  const publish = (content) => {
+    if (content?.sender !== "chalkboard-plugin") return;
+    const message = { source, time: Date.now(), content };
+    const serialized = JSON.stringify(message);
+    lastStorageMessage = serialized;
+    localStorage.setItem(storageKey, serialized);
+    return message;
+  };
+
+  document.addEventListener("broadcast", (event) => {
+    const message = publish(event.content);
+    if (message && channel) {
+      channel.postMessage(message);
+    }
   });
+
+  if (channel) {
+    channel.addEventListener("message", (event) => {
+      if (event.data?.source === source) return;
+      replay(event.data?.content);
+    });
+  }
+
+  window.addEventListener("storage", (event) => {
+    if (event.key === storageKey) readStorageMessage();
+  });
+  window.setInterval(readStorageMessage, 100);
 }
 
 function setupChalkboardControls() {
