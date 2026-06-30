@@ -1,7 +1,12 @@
 image: node:22
 
+stages:
+  - deploy
+
 pages:
   stage: deploy
+  needs: []
+  pages: true
   before_script:
     - npm ci
   script:
