@@ -8,7 +8,7 @@ Live demo: <https://joneuhauser.github.io/revealjs-template/>
 
 - KIT-inspired slide layouts: use the `?grid` query parameter to show the alignment grid, for example `/revealjs-template/?grid`.
 - Scroll mode: use Reveal's scroll view with `?view=scroll`, for example `/revealjs-template/?view=scroll`.
-- Speaker mode: press `S` to open the speaker view. The official reveal.js notes plugin is used when available; otherwise the deck falls back to a lightweight local presenter view.
+- Speaker mode: press `S` to open the speaker view. This requires serving the deck over HTTP, for example with `npm start` or GitHub Pages; opening `index.html` directly as a `file://` URL is not sufficient.
 - Go to slide: press `G` and enter a slide number, slide hash, or matching slide text.
 - Overview mode: press `Esc` or `O` to zoom out to the slide overview; press `Enter` to jump into the selected slide.
 - Whiteboard and annotation: use the footer buttons, `C` for slide annotations, `B` for the whiteboard, and `Del` to clear the current drawing layer.
