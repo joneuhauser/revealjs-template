@@ -1,5 +1,8 @@
 # KIT Reveal.js Presentation
 
+> **WARNING: This is not an official KIT template.**
+> This is an independent, unofficial reveal.js port inspired by KIT presentation materials. Do not treat it as an official corporate-design source.
+
 This is a reveal.js presentation using a KIT-inspired template. The repository keeps the reveal.js vendor runtime, reusable template assets, and deck-specific code separate. The port from the original LaTeX/PowerPoint materials was implemented with Codex.
 
 Live demo: <https://joneuhauser.github.io/revealjs-template/>
