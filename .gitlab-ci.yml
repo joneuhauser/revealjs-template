@@ -1,0 +1,14 @@
+image: node:22
+
+pages:
+  stage: deploy
+  script:
+    - npm ci
+    - mkdir -p public/vendor
+    - cp -R index.html src template public/
+    - cp -R vendor/reveal-runtime public/vendor/
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
