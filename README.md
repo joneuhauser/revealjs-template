@@ -51,12 +51,14 @@ This uses the Vite dev server from the cloned reveal.js checkout and serves this
 
 ## Publish
 
-GitLab Pages is configured via `.gitlab-ci.yml`. On the default branch, CI runs `npm ci`, stages the reveal.js runtime, and publishes a static `public/` directory containing:
+GitHub Pages is configured via `.github/workflows/pages.yml`. On pushes to `main`, the workflow runs `npm ci`, stages the reveal.js runtime, and publishes a static `public/` directory containing:
 
 - `index.html`
 - `src/`
 - `template/`
 - `vendor/reveal-runtime/`
+
+In the GitHub repository settings, configure Pages to deploy from GitHub Actions.
 
 ## Notes
 
