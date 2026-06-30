@@ -229,7 +229,31 @@ function revealPlugins() {
   ].filter(Boolean);
 }
 
+function suppressChalkboardDebugLogs() {
+  if (console.__kitChalkboardDebugFilter) return;
+
+  const originalLog = console.log.bind(console);
+  console.log = (...args) => {
+    const isChalkboardDebug = args.some((arg) => {
+      if (typeof arg === "string") return arg.includes("chalkboard-plugin");
+      try {
+        return JSON.stringify(arg).includes("chalkboard-plugin");
+      } catch {
+        return false;
+      }
+    });
+
+    if (!isChalkboardDebug) originalLog(...args);
+  };
+
+  Object.defineProperty(console, "__kitChalkboardDebugFilter", {
+    value: true,
+  });
+}
+
 function setupChalkboardSync() {
+  suppressChalkboardDebugLogs();
+
   const source =
     globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
   const channelName = "kit-chalkboard-sync";
@@ -242,20 +266,7 @@ function setupChalkboardSync() {
     if (content?.sender !== "chalkboard-plugin") return;
     const event = new CustomEvent("received");
     event.content = content;
-
-    const originalLog = console.log;
-    console.log = (...args) => {
-      const isChalkboardDebug =
-        args.length === 1 &&
-        typeof args[0] === "string" &&
-        args[0].includes('"sender":"chalkboard-plugin"');
-      if (!isChalkboardDebug) originalLog.apply(console, args);
-    };
-    try {
-      document.dispatchEvent(event);
-    } finally {
-      console.log = originalLog;
-    }
+    document.dispatchEvent(event);
   };
 
   const readStorageMessage = () => {
